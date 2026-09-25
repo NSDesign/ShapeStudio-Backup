@@ -1,0 +1,73 @@
+modules = ["nodejs-20", "web", "python-3.11", "postgresql-16"]
+run = "npm run dev"
+hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["jq", "libuuid", "cairo", "pango", "pixman", "libpng", "libjpeg", "chromium", "p7zip", "jemalloc"]
+
+[deployment]
+deploymentTarget = "cloudrun"
+build = ["npm", "run", "build"]
+run = ["sh", "-c", "npm start"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "typecheck"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "API execute enabled data"
+mode = "sequential"
+author = 21294
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Project"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = '''curl -X POST \   -H "Content-Type: application/json" \   -H "x-api-key: $LIVE_API_KEY" \   -d '{"userId": "dev-user"}' \   https://shape-studio-NSDesign.replit.app/api/live/sets/enabled \   | jq -c '{data: .data}' \   | curl -X POST \     -H "Content-Type: application/json" \     -H "x-api-key: $LIVE_API_KEY" \     -d @- \     https://shape-studio-NSDesign.replit.app/api/live/sets/execute'''
+
+[[workflows.workflow]]
+name = "typecheck"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx tsc --noEmit"
+
+[workflows.workflow.metadata]
+isValidation = true
+
+[userenv]
+
+[userenv.shared]
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000

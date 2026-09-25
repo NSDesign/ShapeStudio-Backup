@@ -1,0 +1,37 @@
+node_modules/
+dist/
+.DS_Store
+server/public/
+vite.config.ts.*
+*.tar.gz
+test-results/
+playwright-report/
+
+# Local credentials and machine-specific settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.cache/
+.config/
+.local/
+.upm/
+
+# Generated artwork, uploads, and local project data
+attached_assets/
+exports/
+shape-exports/
+screenshots/
+projects/
+generated-icon.png
+server/validation/output/
+
+# Agent workspace files and deployment automation unrelated to this backup
+.agents/
+.superpowers/
+.github/workflows/deploy-pages.yml
+
+# Tool output
+*.log
+*.tsbuildinfo

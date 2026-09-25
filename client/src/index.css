@@ -1,0 +1,361 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(222, 84%, 4.9%);
+  --foreground: hsl(210, 40%, 98%);
+  --muted: hsl(217, 32%, 17%);
+  --muted-foreground: hsl(215, 20%, 65%);
+  --popover: hsl(222, 84%, 4.9%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 4.9%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --border: hsl(217, 32%, 17%);
+  --input: hsl(217, 32%, 17%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(222, 84%, 4.9%);
+  --secondary: hsl(217, 32%, 17%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --accent: hsl(217, 32%, 17%);
+  --accent-foreground: hsl(210, 40%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(217, 32%, 17%);
+  --radius: 0.5rem;
+  
+  /* Shape Editor Custom Properties */
+  --surface: hsl(215, 28%, 17%);
+  --surface-light: hsl(215, 25%, 27%);
+  --editor-primary: hsl(217, 91%, 60%);
+  --editor-accent: hsl(262, 83%, 58%);
+  --editor-text: hsl(210, 40%, 98%);
+  --editor-text-muted: hsl(215, 20%, 65%);
+  
+  /* Active tab colors for better visibility */
+  --tab-active-text: hsl(0, 0%, 100%);
+  --tab-inactive-text: hsl(215, 20%, 65%);
+}
+
+.dark {
+  --background: hsl(222, 84%, 4.9%);
+  --foreground: hsl(210, 40%, 98%);
+  --muted: hsl(217, 32%, 17%);
+  --muted-foreground: hsl(215, 20%, 65%);
+  --popover: hsl(222, 84%, 4.9%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 4.9%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --border: hsl(217, 32%, 17%);
+  --input: hsl(217, 32%, 17%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(222, 84%, 4.9%);
+  --secondary: hsl(217, 32%, 17%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --accent: hsl(217, 32%, 17%);
+  --accent-foreground: hsl(210, 40%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(217, 32%, 17%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-slate-900 text-slate-50;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Remove focus rings from all input fields globally */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  button:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .shape-canvas {
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: hsl(215, 20%, 35%);
+    transition: .4s;
+    border-radius: 12px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: hsl(217, 91%, 60%);
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+  
+  /* Radix UI Switch styling */
+  .switch-thumb {
+    background-color: var(--foreground);
+  }
+  
+  .switch-thumb[data-state="unchecked"] {
+    opacity: 0.5;
+  }
+  
+  .switch-thumb[data-state="checked"] {
+    opacity: 1;
+  }
+  
+  /* Radix UI Slider disabled state styling */
+  [data-disabled] .slider-track,
+  [data-disabled] .slider-range {
+    opacity: 0.5;
+  }
+  
+  /* Canvas touch behavior prevention */
+  canvas {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+  
+  /* Hide default numeric input spinners (except for .show-spinners) */
+  input[type="number"]:not(.show-spinners)::-webkit-inner-spin-button,
+  input[type="number"]:not(.show-spinners)::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  input[type="number"]:not(.show-spinners) {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  
+  .shape-item {
+    transition: all 0.2s ease;
+  }
+  
+  .shape-item:hover {
+    background-color: rgba(37, 99, 235, 0.1);
+  }
+  
+  .color-picker {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .canvas-selection {
+    border: 2px dashed hsl(217, 91%, 60%);
+    background: hsla(217, 91%, 60%, 0.1);
+    pointer-events: none;
+  }
+}
+
+/* Enhanced tab visibility and text contrast */
+@layer utilities {
+  [data-state="active"] {
+    color: hsl(0, 0%, 100%) !important;
+    font-weight: 600 !important;
+  }
+
+  [data-state="inactive"] {
+    color: hsl(215, 20%, 65%) !important;
+  }
+
+  /* Improve button text contrast in dark surface areas */
+  .bg-\[var\(--surface\)\] button,
+  .bg-\[var\(--surface\)\] .text-slate-400 {
+    color: hsl(210, 40%, 98%) !important;
+  }
+
+  .bg-\[var\(--surface\)\] button:hover {
+    color: hsl(0, 0%, 100%) !important;
+  }
+
+  /* Fix project header text visibility */
+  .text-white {
+    color: hsl(0, 0%, 100%) !important;
+  }
+
+  .text-slate-400 {
+    color: hsl(215, 20%, 65%) !important;
+  }
+
+  /* Ensure icons match text color on light backgrounds */
+  .bg-white svg,
+  .bg-gray-100 svg {
+    color: hsl(0, 0%, 0%) !important;
+  }
+
+  /* API Generator TabsTrigger specific styling */
+  .grid.grid-cols-3 [data-state="active"] {
+    color: hsl(0, 0%, 0%) !important;
+  }
+
+  /* Shape-Specific Properties tabs active state */
+  [data-testid="tabs-list-shape-properties"] [data-state="active"] {
+    color: hsl(217, 91%, 60%) !important;
+  }
+
+  /* Transparent input increment/decrement buttons */
+  .slider-input::-webkit-outer-spin-button,
+  .slider-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    background: transparent;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    cursor: pointer;
+  }
+
+  .slider-input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  .slider-input:hover::-webkit-inner-spin-button,
+  .slider-input:hover::-webkit-outer-spin-button {
+    opacity: 0.3;
+  }
+
+  /* Enhanced numeric input spinner buttons with up/down arrows */
+  /* Desktop-only: Custom styled spinners with arrows */
+  @media (hover: hover) and (pointer: fine) {
+    /* Hide outer spin button since inner overlays it in WebKit */
+    input[type="number"].show-spinners::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    /* Show both arrows on the inner spin button using dual background images */
+    input[type="number"].show-spinners::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+      height: 100%;
+      width: 20px;
+      cursor: pointer;
+      opacity: 1;
+      /* Layered backgrounds: up arrow at top, down arrow at bottom, then solid fill */
+      background: 
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%23e2e8f0' d='M5 1 L8 6 L2 6 Z'/%3E%3C/svg%3E") center 25% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%23e2e8f0' d='M5 7 L8 2 L2 2 Z'/%3E%3C/svg%3E") center 75% no-repeat,
+        #475569;
+      background-size: 8px 6px, 8px 6px, 100% 100%;
+    }
+
+    input[type="number"].show-spinners:hover::-webkit-inner-spin-button {
+      /* On hover: white arrows with lighter background */
+      background: 
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%23ffffff' d='M5 1 L8 6 L2 6 Z'/%3E%3C/svg%3E") center 25% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%23ffffff' d='M5 7 L8 2 L2 2 Z'/%3E%3C/svg%3E") center 75% no-repeat,
+        #64748b;
+      background-size: 8px 6px, 8px 6px, 100% 100%;
+    }
+
+    /* Firefox: Show spinners for inputs with show-spinners class */
+    input[type="number"].show-spinners {
+      -moz-appearance: number-input;
+    }
+  }
+
+  /* Mobile: Use native controls for better touch interaction */
+  @media (hover: none) and (pointer: coarse) {
+    input[type="number"].show-spinners {
+      -webkit-appearance: auto !important;
+      -moz-appearance: number-input !important;
+      appearance: auto !important;
+    }
+    
+    input[type="number"].show-spinners::-webkit-inner-spin-button,
+    input[type="number"].show-spinners::-webkit-outer-spin-button {
+      -webkit-appearance: auto !important;
+      opacity: 1 !important;
+      display: block !important;
+      margin: 0;
+      height: auto;
+    }
+  }
+
+  /* Firefox numeric input styling */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Artboard section grey accent styles - matches dropdown chevron color */
+  /* Grey spinner arrows for artboard section numeric inputs */
+  @media (hover: hover) and (pointer: fine) {
+    input[type="number"].show-spinners.artboard-input::-webkit-inner-spin-button {
+      background: 
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%2394a3b8' d='M5 1 L8 6 L2 6 Z'/%3E%3C/svg%3E") center 25% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%2394a3b8' d='M5 7 L8 2 L2 2 Z'/%3E%3C/svg%3E") center 75% no-repeat,
+        #475569;
+      background-size: 8px 6px, 8px 6px, 100% 100%;
+    }
+
+    input[type="number"].show-spinners.artboard-input:hover::-webkit-inner-spin-button {
+      background: 
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%23cbd5e1' d='M5 1 L8 6 L2 6 Z'/%3E%3C/svg%3E") center 25% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath fill='%23cbd5e1' d='M5 7 L8 2 L2 2 Z'/%3E%3C/svg%3E") center 75% no-repeat,
+        #64748b;
+      background-size: 8px 6px, 8px 6px, 100% 100%;
+    }
+  }
+
+  /* Gray chevron for artboard section select dropdowns */
+  .artboard-select svg {
+    color: #94a3b8 !important;
+  }
+}
